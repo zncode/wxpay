@@ -44,6 +44,18 @@ class PayNotifyCallBack extends WxPayNotify
             $msg = "订单查询失败";
             return false;
         }
+
+        //TODO 发货
+        $this->product_deliver();
+
+        return true;
+    }
+
+    /**
+     * 商户发货
+     */
+    public function product_deliver()
+    {
         return true;
     }
 }
