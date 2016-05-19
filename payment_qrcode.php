@@ -2,7 +2,7 @@
 ini_set('date.timezone','Asia/Shanghai');
 
 require_once "lib/WxPay.Api.php";
-require_once "WxPay.NativePay.php";
+require_once "lib/WxPay.NativePay.php";
 require_once 'ext/phpqrcode/phpqrcode.php';
 
 if(!empty($_GET['pid']))
