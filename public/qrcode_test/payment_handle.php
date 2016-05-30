@@ -16,16 +16,19 @@ class NativeNotifyCallBack extends WxPayNotify
     {
         //生成订单
         $order = $this->order_create($openId, $product_id);
+        
+        //获取产品信息
+        $product = $this->product_load($product_id);
 
         //统一下单
         $input = new WxPayUnifiedOrder();
-        $input->SetBody("testbody");
-        $input->SetAttach("testattach");
+        $input->SetBody($product->body);
+        $input->SetAttach($product->attach);
         $input->SetOut_trade_no(WxPayConfig::MCHID.date("YmdHis"));
         $input->SetTotal_fee($order->total_fee);
         $input->SetTime_start(date("YmdHis"));
         $input->SetTime_expire(date("YmdHis", time() + 600));
-        $input->SetGoods_tag("testtag");
+        $input->SetGoods_tag($product->tag);
         $input->SetNotify_url("http://dev87v8payment.87870.com/qrcode_test/payment_notify.php");
         $input->SetTrade_type("NATIVE");
         $input->SetOpenid($openId);
@@ -43,6 +46,16 @@ class NativeNotifyCallBack extends WxPayNotify
         $order->total_fee = 10;
 
         return $order;
+    }
+
+    public function product_load($pid)
+    {
+        //TODO get real product
+        $product = new stdClass();
+        $product->body = 'testbody';
+        $product->attach = 'testattach';
+        $product->tag = 'testtag';
+        return $product;
     }
 
     public function NotifyProcess($data, &$msg)
