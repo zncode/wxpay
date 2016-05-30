@@ -26,7 +26,7 @@ class NativeNotifyCallBack extends WxPayNotify
         $input->SetTime_start(date("YmdHis"));
         $input->SetTime_expire(date("YmdHis", time() + 600));
         $input->SetGoods_tag("testtag");
-        $input->SetNotify_url("http://dev87v8payment.87870.com/wxpay/payment_notify.php");
+        $input->SetNotify_url("http://dev87v8payment.87870.com/qrcode_test/payment_notify.php");
         $input->SetTrade_type("NATIVE");
         $input->SetOpenid($openId);
         $input->SetProduct_id($product_id);
