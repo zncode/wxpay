@@ -12,10 +12,10 @@ $log = Log::Init($logHandler, 15);
 
 class NativeNotifyCallBack extends WxPayNotify
 {
-    public function unifiedorder($openId, $product_id)
+    public function unifiedorder($product_id)
     {
         //生成订单
-        $order = $this->order_create($openId, $product_id);
+        $order = $this->order_create($product_id);
         
         //获取产品信息
         $product = $this->product_load($product_id);
@@ -23,26 +23,24 @@ class NativeNotifyCallBack extends WxPayNotify
         //统一下单
         $input = new WxPayUnifiedOrder();
         $input->SetBody($product->body);
-        $input->SetAttach($product->attach);
-        $input->SetOut_trade_no(WxPayConfig::MCHID.date("YmdHis"));
-        $input->SetTotal_fee($order->total_fee);
+        $input->SetOut_trade_no($order->out_trade_no);
+        $input->SetTotal_fee($product->total_fee);
         $input->SetTime_start(date("YmdHis"));
         $input->SetTime_expire(date("YmdHis", time() + 600));
         $input->SetGoods_tag($product->tag);
-        $input->SetNotify_url("http://dev87v8payment.87870.com/qrcode_test/payment_notify.php");
-        $input->SetTrade_type("NATIVE");
-        $input->SetOpenid($openId);
-        $input->SetProduct_id($product_id);
+        $input->SetNotify_url("http://dev87v8payment.87870.com/app_test/payment_notify.php");
+        $input->SetTrade_type("APP");
         $result = WxPayApi::unifiedOrder($input);
         Log::DEBUG("unifiedorder:" . json_encode($result));
         return $result;
     }
 
-    public function order_create($openid, $product_id)
+    public function order_create($product_id)
     {
         //TODO get real order
         $order = new stdClass();
         $order->id = 999;
+        $order->out_trade_no = WxPayConfig::MCHID.date("YmdHis");
         $order->total_fee = 10;
 
         return $order;
@@ -55,6 +53,7 @@ class NativeNotifyCallBack extends WxPayNotify
         $product->body = 'testbody';
         $product->attach = 'testattach';
         $product->tag = 'testtag';
+        $product->total_fee = '10';
         return $product;
     }
 
@@ -63,18 +62,16 @@ class NativeNotifyCallBack extends WxPayNotify
         //echo "处理回调";
         Log::DEBUG("call back:" . json_encode($data));
 
-        if(!array_key_exists("openid", $data) ||
-            !array_key_exists("product_id", $data))
+        if(!array_key_exists("product_id", $data))
         {
             $msg = "回调数据异常";
             return false;
         }
 
-        $openid = $data["openid"];
         $product_id = $data["product_id"];
 
         //统一下单
-        $result = $this->unifiedorder($openid, $product_id);
+        $result = $this->unifiedorder($product_id);
         if(!array_key_exists("appid", $result) ||
             !array_key_exists("mch_id", $result) ||
             !array_key_exists("prepay_id", $result))
