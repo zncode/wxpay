@@ -205,7 +205,6 @@ class WxPayResults extends WxPayDataBase
 		$obj->FromXml($xml);
 		//fix bug 2015-06-29
 		if($obj->values['return_code'] != 'SUCCESS'){
-        Log::DEBUG('WxPay.Data.php-Init', $obj->GetValues.'test1');
             return $obj->GetValues();
 		}
 		$obj->CheckSign();
