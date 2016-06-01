@@ -412,7 +412,8 @@ class WxPayApi
 	{
 		//获取通知的数据
 		$xml = $GLOBALS['HTTP_RAW_POST_DATA'];
-		//如果返回成功则验证签名
+        Log:DEBUG('WxPay.Api.php-notify', $xml.'test_xml');
+        //如果返回成功则验证签名
 		try {
 			$result = WxPayResults::Init($xml);
 		} catch (WxPayException $e){
