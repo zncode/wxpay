@@ -18,5 +18,5 @@ $notify = new NativePay();
 $url = $notify->GetPrePayUrl($pid);
 
 $url = urldecode($url);
-
+echo $url;
 QRcode::png($url);
