@@ -43,7 +43,7 @@ class NativeNotifyCallBack extends WxPayNotify
         //TODO get real order
         $order = new stdClass();
         $order->id = 999;
-        $order->total_fee = 10;
+        $order->total_fee = 1;
 
         return $order;
     }
@@ -52,9 +52,9 @@ class NativeNotifyCallBack extends WxPayNotify
     {
         //TODO get real product
         $product = new stdClass();
-        $product->body = 'testbody';
-        $product->attach = 'testattach';
-        $product->tag = 'testtag';
+        $product->body = '87v8VR游戏';
+        $product->attach = '体验付费';
+        $product->tag = 'Game';
         return $product;
     }
 
