@@ -7,7 +7,7 @@ require_once '../../lib/WxPay.Notify.php';
 require_once '../../lib/log.php';
 
 //初始化日志
-$logHandler= new CLogFileHandler("../logs/".date('Y-m-d').'.log');
+$logHandler= new CLogFileHandler("../../logs/".date('Y-m-d').'.log');
 $log = Log::Init($logHandler, 15);
 
 class NativeNotifyCallBack extends WxPayNotify
@@ -16,17 +16,20 @@ class NativeNotifyCallBack extends WxPayNotify
     {
         //生成订单
         $order = $this->order_create($openId, $product_id);
+        
+        //获取产品信息
+        $product = $this->product_load($product_id);
 
         //统一下单
         $input = new WxPayUnifiedOrder();
-        $input->SetBody("testbody");
-        $input->SetAttach("testattach");
+        $input->SetBody($product->body);
+        $input->SetAttach($product->attach);
         $input->SetOut_trade_no(WxPayConfig::MCHID.date("YmdHis"));
         $input->SetTotal_fee($order->total_fee);
         $input->SetTime_start(date("YmdHis"));
         $input->SetTime_expire(date("YmdHis", time() + 600));
-        $input->SetGoods_tag("testtag");
-        $input->SetNotify_url("http://dev87v8payment.87870.com/wxpay/payment_notify.php");
+        $input->SetGoods_tag($product->tag);
+        $input->SetNotify_url("http://dev87v8payment.87870.com/qrcode_test/payment_notify.php");
         $input->SetTrade_type("NATIVE");
         $input->SetOpenid($openId);
         $input->SetProduct_id($product_id);
@@ -40,9 +43,19 @@ class NativeNotifyCallBack extends WxPayNotify
         //TODO get real order
         $order = new stdClass();
         $order->id = 999;
-        $order->total_fee = 10;
+        $order->total_fee = 1;
 
         return $order;
+    }
+
+    public function product_load($pid)
+    {
+        //TODO get real product
+        $product = new stdClass();
+        $product->body = '87v8VR游戏';
+        $product->attach = '体验付费';
+        $product->tag = 'Game';
+        return $product;
     }
 
     public function NotifyProcess($data, &$msg)
